@@ -9,45 +9,23 @@ class Latex {
     std::vector<std::string> lines;
 
     public:
-    Latex(std::string p) : path{p} {}
-    Latex(Latex& obj) : path{obj.path} {
-        lines = obj.lines;
-    }
-    Latex(Latex&& obj) : path{obj.path} {
-        lines = obj.lines;
-
-        obj.path = "";
-        obj.lines.clear();
-    }
+    Latex(std::string p, std::string title = "", std::string author = "", std::string date = "");
+    Latex(Latex& obj);
+    Latex(Latex&& obj);
 
     //Copy and move assignment
-    Latex& operator= (Latex& copy) noexcept {
-        if (this == &copy) {
-            return *this;
-        }
-        path = copy.path;
-        lines = copy.lines;
-        
-        return *this;
-    }
-    Latex& operator= (Latex&& move) noexcept {
-        if (this == &move) {
-            return *this;
-        }
-        path = move.path;
-        lines = move.lines;
-        
-        move.path = "";
-        move.lines.clear();
-        
-        return *this;
-    }
+    Latex& operator= (Latex& copy) noexcept;
+    Latex& operator= (Latex&& move) noexcept;
 
     //methods
     void newSection(std::string section);
     void newSubSection(std::string sub_section);
     void newSubSubsection(std::string sub_sub_section);
     void addText(std::string text);
+    void addTOC(bool page_break = true);
+    void addPagebreak();
+
+    void save();
 };
 
 #endif //Latex_h

@@ -1,0 +1,10 @@
+My name; Title of the file; 1/1/1970
+# My first Section
+This is the first text of the file
+## What can I do?
+I can create a Tex source file
+# Anything else?
+Nah
+
+That's it
+@TOC

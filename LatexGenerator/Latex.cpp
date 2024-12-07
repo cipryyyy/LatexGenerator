@@ -2,9 +2,11 @@
 
 Latex::Latex(std::string p, std::string title, std::string author, std::string date) : path{p} {
     lines.push_back("\\documentclass{article}");
+    lines.push_back("");
     lines.push_back("\\title{" + title + "}");
     lines.push_back("\\author{" + author + "}");
     lines.push_back("\\date{" + date + "}");
+    lines.push_back("");
     lines.push_back("\\begin{document}");
     lines.push_back("\\maketitle");
 }
@@ -40,21 +42,24 @@ Latex& Latex::operator= (Latex&& move) noexcept {
 }
 
 void Latex::newSection(std::string name) {
+    lines.push_back("");
     lines.push_back("\\section{" + name + "}");
 }
 void Latex::newSubSection(std::string name) {
+    lines.push_back("");
     lines.push_back("\\subsection{" + name + "}");
 }
-void Latex::newSubSubsection(std::string name) {
+void Latex::newSubSubSection(std::string name) {
+    lines.push_back("");
     lines.push_back("\\subsubsection{" + name + "}");
 }
 void Latex::addText(std::string text) {
     lines.push_back(text);
 }
 void Latex::addTOC(bool page_break) {
-    lines.insert(lines.begin() + 6, "\\tableofcontents");
+    lines.insert(lines.begin() + 8, "\\tableofcontents");
     if (page_break) {
-        lines.insert(lines.begin() + 7, "\\pagebreak");
+        lines.insert(lines.begin() + 9, "\\pagebreak");
     }
 }
 void Latex::addPagebreak() {
@@ -95,9 +100,9 @@ void Latex::addTable(Table table, bool black_title, std::string caption, double 
     lines.push_back("\\end{tabular}");
     lines.push_back("\\end{table}");
 }
-void Latex::save() {
+void Latex::save(std::string file_name) {
     lines.push_back("\\end{document}");
-    std::string filePath = path + "/source.tex";
+    std::string filePath = path + "/" + file_name + ".tex";
     std::ofstream outFile(filePath);
 
     if (!outFile) {

@@ -26,7 +26,7 @@ class Latex {
     //methods
     void newSection(std::string section);
     void newSubSection(std::string sub_section);
-    void newSubSubsection(std::string sub_sub_section);
+    void newSubSubSection(std::string sub_sub_section);
     void addText(std::string text);
 
     void addTOC(bool page_break = true);
@@ -34,7 +34,7 @@ class Latex {
     void addLibrary(std::string Library_name);
     void addTable(Table table, bool black_title = false, std::string caption = "", double padding = 1);
 
-    void save();
+    void save(std::string file_name = "source");
 };
 
 class Table {

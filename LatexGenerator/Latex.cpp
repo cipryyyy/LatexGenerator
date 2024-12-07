@@ -74,18 +74,18 @@ void Latex::addTable(Table table, bool black_title, std::string caption, double 
     lines.push_back("\\begin{table}[htb]");
     lines.push_back("\\centering");
     std::string line = "\\begin{tabular}{";
-    for (int i = 0; i < table.get_columns(); i++) {
+    for (int i = 0; i < table.getColumns(); i++) {
         line += "|c";
     }
     lines.push_back(line + "|} \\hline");
     line = "";
-    for (int i = 0; i < (table.get_columns() * table.get_rows()); i++) {
-        if (black_title && i < table.get_columns()) {
+    for (int i = 0; i < (table.getColumns() * table.getRows()); i++) {
+        if (black_title && i < table.getColumns()) {
             line += "\\textbf{" + table[i] + "}";
         } else {
             line += table[i];
         }
-        if ((i + 1) % table.get_columns() != 0) {
+        if ((i + 1) % table.getColumns() != 0) {
             line += "&";
         } else {
             line += "\\\\ \\hline";
@@ -99,6 +99,9 @@ void Latex::addTable(Table table, bool black_title, std::string caption, double 
     }
     lines.push_back("\\end{tabular}");
     lines.push_back("\\end{table}");
+}
+void Latex::addImage(std::string image_path, double size, std::string caption) {
+    //TODO
 }
 void Latex::save(std::string file_name) {
     lines.push_back("\\end{document}");
@@ -117,9 +120,13 @@ void Latex::save(std::string file_name) {
     outFile.close();
 }
 
+
+// TABLE
+
+
 Table::Table(int column_number, int rows_number) : cols{column_number}, rows{rows_number} {}
 
-void Table::add_elements(std::initializer_list<std::any> list) {
+void Table::addElements(std::initializer_list<std::any> list) {
     for (const auto& item : list) {
         std::string value;
 
@@ -140,6 +147,12 @@ void Table::add_elements(std::initializer_list<std::any> list) {
         elem.push_back(value);
     }
 }
+void Table::addElements(const std::vector<std::string>& list) {
+    for (const auto& item : list) {
+        std::string value = item;
+        elem.push_back(value);
+    }
+}
 
 std::string Table::operator[](int index) noexcept {
     if (index < 0 || index >= elem.size()) {
@@ -154,11 +167,24 @@ const std::string Table::operator[](int index) const noexcept{
     return elem[index];
 }
 
-int Table::get_columns() const noexcept {
+void Table::setColumns(int column_number) {
+    cols = column_number;
+}
+void Table::setRows(int row_number) {
+    rows = row_number;
+}
+int Table::getColumns() const noexcept {
     return cols;
 }
-int Table::get_rows() const noexcept {
+int Table::getRows() const noexcept {
     return rows;
+}
+void Table::addRow(int row_number) noexcept {
+    if (row_number < 1) {
+        return;
+    } else {
+        rows += row_number;
+    }
 }
 std::vector<std::string> Table::get_table() noexcept {
     return elem;

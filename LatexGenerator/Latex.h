@@ -32,7 +32,8 @@ class Latex {
     void addTOC(bool page_break = true);
     void addPagebreak();
     void addLibrary(std::string Library_name);
-    void addTable(Table table, bool black_title = false, std::string caption = "", double padding = 1);
+    void addTable(Table table, bool black_title = false, std::string caption = "", double padding = 1.5);
+    void addImage(std::string image_path, double size = 0.5, std::string caption = "");
 
     void save(std::string file_name = "source");
 };
@@ -47,13 +48,17 @@ public:
             return "Index out of bound";
         }
     };
-    Table(int column_number, int rows_number);
+    Table(int column_number = 0, int rows_number = 0);
 
-    void add_elements(std::initializer_list<std::any> list);
+    void addElements(std::initializer_list<std::any> list);
+    void addElements(const std::vector<std::string>& list);
     std::string operator[](int index) noexcept;
     const std::string operator[](int index) const noexcept;
-    int get_columns() const noexcept;
-    int get_rows() const noexcept;
+    void setColumns(int column_number = 1);
+    void setRows(int row_number = 1);
+    int getColumns() const noexcept;
+    int getRows() const noexcept;
+    void addRow(int row_number = 1) noexcept;
     std::vector<std::string> get_table() noexcept;
 };
 #endif //Latex_h

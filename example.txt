@@ -1,10 +1,27 @@
-My name; Title of the file; 1/1/1970
-# My first Section
-This is the first text of the file
-## What can I do?
-I can create a Tex source file
-# Anything else?
-Nah
+My Document Title; Author Name; 2024-12-07
 
-That's it
 @TOC
+
+# Section 1
+
+Some text.
+
+## Subsection 1.1
+
+Things.
+
+### Subsubsection 1.1.1
+
+More things.
+
+# Section 2
+
+Another section.
+
+@TABLE 5
+table with, 5 rows, el1, el2, el3, out
+1,2,3,4,5
+a,b,c,d,e
+incomplete row
+
+@TABLE

@@ -57,9 +57,12 @@ void Latex::addText(std::string text) {
     lines.push_back(text);
 }
 void Latex::addTOC(bool page_break) {
-    lines.insert(lines.begin() + 8, "\\tableofcontents");
+    auto it = std::find(lines.begin(), lines.end(), "\\maketitle");
+    int index = std::distance(lines.begin(), it);
+
+    lines.insert(lines.begin() + (index + 1), "\\tableofcontents");
     if (page_break) {
-        lines.insert(lines.begin() + 9, "\\pagebreak");
+        lines.insert(lines.begin() + (index +2), "\\pagebreak");
     }
 }
 void Latex::addPagebreak() {
@@ -69,10 +72,19 @@ void Latex::addLibrary(std::string Library_name) {
     libs.push_back(Library_name);
     lines.insert(lines.begin() + 1, "\\usepackage{"+Library_name+"}");
 }
-void Latex::addTable(Table table, bool black_title, std::string caption, double padding){
+void Latex::addTable(Table table, bool black_title, std::string caption, double padding, bool textwidth){
+    if (std::find(libs.begin(), libs.end(), "float") == libs.end()) {
+        addLibrary("float");
+    }
+    if (textwidth) {
+        if (std::find(libs.begin(), libs.end(), "graphicx") == libs.end()) {
+            addLibrary("graphicx");
+        }
+    }
     lines.push_back("\\def\\arraystretch{" + std::to_string(padding) + "}");
-    lines.push_back("\\begin{table}[htb]");
+    lines.push_back("\\begin{table}[H]");
     lines.push_back("\\centering");
+    lines.push_back("\\resizebox{\\textwidth}{!}{");
     std::string line = "\\begin{tabular}{";
     for (int i = 0; i < table.getColumns(); i++) {
         line += "|c";
@@ -98,11 +110,24 @@ void Latex::addTable(Table table, bool black_title, std::string caption, double 
         lines.push_back("\\caption{" + caption + "}");
     }
     lines.push_back("\\end{tabular}");
+    lines.push_back("}");
     lines.push_back("\\end{table}");
 }
 void Latex::addImage(std::string image_path, double size, std::string caption) {
     //TODO
 }
+
+void Latex::setA4layout() {
+    addLibrary("geometry");
+    lines[0] = "\\documentclass[a4paper]{article}";
+    lines.insert(lines.begin() + 2, "\\geometry{"); 
+    lines.insert(lines.begin() + 3, " a4paper,"); 
+    lines.insert(lines.begin() + 4, " total={170mm,257mm},"); 
+    lines.insert(lines.begin() + 5, " left=20mm,");
+    lines.insert(lines.begin() + 6, " top=20mm,"); 
+    lines.insert(lines.begin() + 7, "}");   
+}
+
 void Latex::save(std::string file_name) {
     lines.push_back("\\end{document}");
     std::string filePath = path + "/" + file_name + ".tex";
@@ -188,4 +213,8 @@ void Table::addRow(int row_number) noexcept {
 }
 std::vector<std::string> Table::get_table() noexcept {
     return elem;
+}
+void Table::clear() {
+    elem.clear();
+    rows = 0;
 }

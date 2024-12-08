@@ -5,13 +5,18 @@
 #include <stdexcept>
 #include <sstream>
 #include <cctype>
+#include <curl/curl.h>
+#include <filesystem>
 #include "Latex.h"
 using namespace std;
 
-bool isBlank(const std::string& str);
-std::vector<std::string> fileReader(std::string path);
-std::string imageCheck(const std::string& line);
+namespace fs = std::filesystem;
+
 void texGen(std::vector<std::string> lines, std::string outputName);
+std::vector<std::string> fileReader(std::string path);
+bool isBlank(const std::string& str);
+std::string imageCheck(const std::string& line);
+size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp);
 
 int main(int argc, char* argv[]) {
     if (argc > 1) {
@@ -32,7 +37,7 @@ int main(int argc, char* argv[]) {
         std::vector<std::string> lines = fileReader(path);
         cout << "Output file name: ";
         cin >> output;
-        
+
         texGen(lines, output);
     }
     return 0;
@@ -42,6 +47,7 @@ void texGen(std::vector<std::string> lines, std::string outputName) {
     std::string title, author, date;
     bool tableMode = false;
     Table table;
+    int cols;
 
     std::stringstream ss(lines[0]);
     std::getline(ss, title, ';');
@@ -78,17 +84,19 @@ void texGen(std::vector<std::string> lines, std::string outputName) {
             }
             if (line.substr(1, 5) == "TABLE") {
                 if (!tableMode) {
-                    int cols;
-
+                    table.clear();
+                    tableMode = true;
                     std::stringstream ss(line);
                     ss.ignore(7, ' ');
                     ss >> cols;
                     table.setColumns(cols);
-                    tableMode = true;
                 } else {
-                    doc.addTable(table, true);  
+                    doc.addTable(table, true, "", 1.5, true);
                     tableMode = false;
                 }
+            }
+            if (line.substr(1,7) == "A4PAPER") {
+                doc.setA4layout();
             }
         } else {
             if (tableMode) {
@@ -102,8 +110,11 @@ void texGen(std::vector<std::string> lines, std::string outputName) {
                     elems.push_back(temp);
                 }
 
-                if (elems.size() > 5) {
-                    elems.resize(5);
+                if (elems.size() > cols) {
+                    elems.resize(cols);
+                }
+                for (int i = elems.size(); i < cols; i++) {
+                    elems.push_back("");
                 }
 
                 table.addRow();
@@ -143,4 +154,8 @@ bool isBlank(const std::string& str) {
 std::string imageCheck(const std::string& line) {
     return "";
     //TODO
+}
+size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp) {
+    ((std::string*)userp)->append((char*)contents, size * nmemb);
+    return size * nmemb;
 }

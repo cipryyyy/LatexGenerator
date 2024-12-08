@@ -2,6 +2,7 @@
 #include <any>
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 #ifndef Latex_h
 #define Latex_h
@@ -32,9 +33,10 @@ class Latex {
     void addTOC(bool page_break = true);
     void addPagebreak();
     void addLibrary(std::string Library_name);
-    void addTable(Table table, bool black_title = false, std::string caption = "", double padding = 1.5);
+    void addTable(Table table, bool black_title = false, std::string caption = "", double padding = 1.5, bool textwidth = false);
     void addImage(std::string image_path, double size = 0.5, std::string caption = "");
 
+    void setA4layout();
     void save(std::string file_name = "source");
 };
 
@@ -59,6 +61,7 @@ public:
     int getColumns() const noexcept;
     int getRows() const noexcept;
     void addRow(int row_number = 1) noexcept;
+    void clear();
     std::vector<std::string> get_table() noexcept;
 };
 #endif //Latex_h

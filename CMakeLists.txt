@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_executable(LatexGenerator 
-    converter.cpp
+    interfaces/converter.cpp
     LatexGenerator/Latex.cpp
 )
 
